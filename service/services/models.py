@@ -20,10 +20,12 @@ class Plan(models.Model):
     )
 
     plan_type = models.CharField(max_length=20, choices=PLAN_TYPES)
-    discount_percentage = models.PositiveIntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
+    discount_percentage = models.PositiveIntegerField(default=0,
+                                                      validators=[MinValueValidator(0), MaxValueValidator(100)])
 
     def __str__(self):
         return self.plan_type
+
 
 class Subscription(models.Model):
     client = models.ForeignKey(Client, on_delete=models.PROTECT, related_name='subscriptions')
@@ -32,4 +34,3 @@ class Subscription(models.Model):
 
     def __str__(self):
         return f'{self.client} - {self.service} - {self.plan}'
-
