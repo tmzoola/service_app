@@ -51,3 +51,24 @@ services:
       - rabbitmq
     depends_on:
       - rabbitmq
+      - database
+    environment:
+      - DB_HOST=database
+      - DB_NAME=dbname
+      - DB_USER=dbuser
+      - DB_PASS=pass
+
+  flower:
+    build:
+      context: .
+    hostname: flower
+    entrypoint: celery
+    command: -A celery_app.app flower
+    volumes:
+      - ./service:/service
+    links:
+      - rabbitmq
+    depends_on:
+      - rabbitmq
+    ports:
+      - "5555:5555"

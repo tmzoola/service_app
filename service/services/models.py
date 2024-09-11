@@ -1,6 +1,6 @@
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
-
+from services.tasks import set_price
 from clients.models import Client
 
 
@@ -31,6 +31,13 @@ class Subscription(models.Model):
     client = models.ForeignKey(Client, on_delete=models.PROTECT, related_name='subscriptions')
     service = models.ForeignKey(Service, on_delete=models.PROTECT, related_name='subscriptions')
     plan = models.ForeignKey(Plan, on_delete=models.PROTECT, related_name='subscriptions')
+    price = models.PositiveIntegerField(default=0)
+
+    def save(self, *args, save_model=True, **kwargs):
+        if save_model:
+            set_price.delay(self.id)
+
+        return super().save(*args, **kwargs)
 
     def __str__(self):
         return f'{self.client} - {self.service} - {self.plan}'

@@ -136,17 +136,17 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'UTC'
 
 
-LOGGING = {
-    'version': 1,
-    'handlers': {
-        'console': {'class': 'logging.StreamHandler'}
-    },
-
-    'loggers': {
-        'django.db.backends':
-            {
-                'handlers': ['console'],
-                'level': 'DEBUG'
-            }
-    }
-}
+# LOGGING = {
+#     'version': 1,
+#     'handlers': {
+#         'console': {'class': 'logging.StreamHandler'}
+#     },
+#
+#     'loggers': {
+#         'django.db.backends':
+#             {
+#                 'handlers': ['console'],
+#                 'level': 'DEBUG'
+#             }
+#     }
+# }
