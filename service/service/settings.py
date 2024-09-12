@@ -137,7 +137,22 @@ CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'UTC'
 
+# Task priority support
+CELERY_TASK_QUEUES = {
+    'default': {
+        'exchange': 'default',
+        'routing_key': 'default',
+        'queue_arguments': {'x-max-priority': 10},  # Support for priority levels 0-9
+    },
+}
 
+CELERY_TASK_DEFAULT_QUEUE = 'default'
+
+CELERY_RESULT_EXPIRES = 3600
+
+CELERY_TASK_TIME_LIMIT = 300
+CELERY_TASK_SOFT_TIME_LIMIT = 250
+CELERY_ACKS_LATE = True
 
 # LOGGING = {
 #     'version': 1,
