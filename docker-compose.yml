@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   web:
     build:
@@ -6,18 +8,17 @@ services:
       - "8080:8080"
     volumes:
       - ./service:/service
-
     environment:
       - DB_HOST=database
       - DB_NAME=dbname
       - DB_USER=dbuser
       - DB_PASS=pass
-
     command: >
       sh -c "python manage.py runserver 0.0.0.0:8080"
-
     depends_on:
       - database
+      - rabbitmq
+      - redis
 
   database:
     image: postgres:16-alpine
@@ -32,12 +33,15 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
-    expose:
-      - "5672"
     environment:
       RABBITMQ_DEFAULT_VHOST: "/"
       RABBITMQ_DEFAULT_USER: "guest"
       RABBITMQ_DEFAULT_PASS: "guest"
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
 
   worker:
     build:
@@ -47,9 +51,8 @@ services:
     command: -A celery_app.app worker --loglevel=info
     volumes:
       - ./service:/service
-    links:
-      - rabbitmq
     depends_on:
+      - redis
       - rabbitmq
       - database
     environment:
@@ -63,12 +66,11 @@ services:
       context: .
     hostname: flower
     entrypoint: celery
-    command: -A celery_app.app flower
+    command: -A celery_app.app flower --broker=amqp://guest:guest@rabbitmq:5672/
     volumes:
       - ./service:/service
-    links:
-      - rabbitmq
     depends_on:
       - rabbitmq
+      - redis
     ports:
       - "5555:5555"

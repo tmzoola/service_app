@@ -8,20 +8,20 @@ class Service(models.Model):
     name = models.CharField(max_length=100)
     full_price = models.PositiveIntegerField()
 
+    def __str__(self):
+        return self.name
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.__full_price = self.full_price
 
     def save(self, *args, **kwargs):
-
+        print("salom")
         if self.__full_price != self.full_price:
             for subscription in self.subscriptions.all():
                 set_price.delay(subscription.id)
 
         return super().save(*args, **kwargs)
-
-    def __str__(self):
-        return self.name
 
 
 class Plan(models.Model):
@@ -40,7 +40,7 @@ class Plan(models.Model):
         self.__discount_percentage = self.discount_percentage
 
     def save(self, *args, **kwargs):
-
+        print("salom")
         if self.__discount_percentage != self.discount_percentage:
             for subscription in self.subscriptions.all():
                 set_price.delay(subscription.id)
