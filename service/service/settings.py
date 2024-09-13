@@ -154,6 +154,18 @@ CELERY_TASK_TIME_LIMIT = 300
 CELERY_TASK_SOFT_TIME_LIMIT = 250
 CELERY_ACKS_LATE = True
 
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": "redis://redis:6379",
+        "OPTIONS": {
+            "db": "1"
+        }
+    }
+}
+
+PRICE_CACHE_NAME = 'price_cache'
+
 # LOGGING = {
 #     'version': 1,
 #     'handlers': {
